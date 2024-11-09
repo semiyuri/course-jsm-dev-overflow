@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const SocialAuthForm = () => {
   const buttonClass =
-    "background-dark400_light900 body-medium text-dark200_light800 rounded-2 min-h-12 flex-1 px-4 py-3.5";
+    "background-dark400_light900 hover:background-light800_dark300 body-medium text-dark200_light800 rounded-2 min-h-12 flex-1 px-4 py-3.5";
 
   return (
     <div className="mt-10 flex flex-wrap gap-2.5">
