@@ -54,8 +54,10 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       backgroundImage: {
-        "auth-dark": "url('/images/auth-dark.png')",
-        "auth-light": "url('/images/auth-light.png')",
+        "auth-dark":
+          "linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('/images/auth-dark.png')",
+        "auth-light":
+          "linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('/images/auth-light.png')",
       },
     },
   },
