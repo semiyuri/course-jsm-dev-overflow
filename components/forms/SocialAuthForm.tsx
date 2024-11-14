@@ -14,13 +14,8 @@ const SocialAuthForm = () => {
 
   const handleSignIn = async (provider: AuthProvider) => {
     try {
-      await signIn(provider, {
-        redirectTo: ROUTES.HOME,
-        redirect: false,
-      });
+      await signIn(provider, { redirectTo: ROUTES.HOME, redirect: false });
     } catch (error) {
-      console.log(error);
-
       toast({
         title: "Sign-in failed.",
         description:
