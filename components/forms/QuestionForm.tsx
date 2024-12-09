@@ -5,9 +5,11 @@ import { MDXEditorMethods } from "@mdxeditor/editor";
 import dynamic from "next/dynamic";
 import React, { useRef } from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { AskQuestionSchema } from "@/lib/validations";
 
+import TagCard from "../cards/TagCard";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -27,7 +29,7 @@ const Editor = dynamic(() => import("@/components/editor"), {
 const QuestionForm = () => {
   const editorRef = useRef<MDXEditorMethods>(null);
 
-  const formContext = useForm({
+  const formContext = useForm<z.infer<typeof AskQuestionSchema>>({
     resolver: zodResolver(AskQuestionSchema),
     defaultValues: {
       title: "",
@@ -35,9 +37,46 @@ const QuestionForm = () => {
       tags: [],
     },
   });
-  const { control, handleSubmit } = formContext;
+  const { control, handleSubmit, setValue, clearErrors, setError } =
+    formContext;
 
-  const handleCreateQuestion = () => {};
+  const handleInputKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    field: { value: string[] }
+  ) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      const value = e.currentTarget.value.trim();
+
+      if (value && value.length < 15 && !field.value.includes(value)) {
+        setValue("tags", [...field.value, value]);
+        e.currentTarget.value = "";
+        clearErrors("tags");
+      } else if (value.length >= 15) {
+        setError("tags", { message: "Tag should be less than 15 characters" });
+      } else if (field.value.includes(value)) {
+        setError("tags", { message: "Tag already exists" });
+      }
+    }
+  };
+
+  const handleTagRemove = (tag: string, field: { value: string[] }) => {
+    const newTags = field.value.filter((t) => t !== tag);
+
+    setValue("tags", newTags);
+
+    if (newTags.length === 0) {
+      setError("tags", {
+        type: "manual",
+        message: "Tags are required",
+      });
+    }
+  };
+
+  const handleCreateQuestion = (data: z.infer<typeof AskQuestionSchema>) => {
+    console.log("submit", data);
+  };
 
   return (
     <Form {...formContext}>
@@ -113,10 +152,22 @@ const QuestionForm = () => {
                   <Input
                     className="paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 no-focus min-h-[56px] border"
                     placeholder="Add tags..."
-                    {...field}
+                    onKeyDown={(e) => handleInputKeyDown(e, field)}
                   />
 
-                  <div className="mt-2">Tags</div>
+                  <div className="flex-start mt-2.5 flex-wrap gap-2.5">
+                    {field.value.map((tag) => (
+                      <TagCard
+                        key={tag}
+                        _id={tag}
+                        name={tag}
+                        compact
+                        remove
+                        isButton
+                        handleRemove={() => handleTagRemove(tag, field)}
+                      />
+                    ))}
+                  </div>
                 </div>
               </FormControl>
 
