@@ -1,4 +1,4 @@
-import { model, models, Schema, Types } from "mongoose";
+import { model, models, Schema, Types, Document } from "mongoose";
 
 import { ActionType } from "@/types/model";
 
@@ -8,6 +8,8 @@ export interface IInteraction {
   actionId: Types.ObjectId;
   actionType: ActionType;
 }
+
+export interface IInteractionDoc extends IInteraction, Document {}
 
 const InteractionSchema = new Schema<IInteraction>(
   {
