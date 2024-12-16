@@ -1,12 +1,12 @@
 import { model, models, Schema, Types } from "mongoose";
 
-import { VoteType, VoteVoteType } from "@/types/model";
+import { VoteType, ActionType } from "@/types/model";
 
 export interface IVote {
   author: Types.ObjectId;
   id: Types.ObjectId;
-  type: VoteType;
-  voteType: VoteVoteType;
+  type: ActionType;
+  voteType: ActionType;
 }
 
 const VoteSchema = new Schema<IVote>(
@@ -15,12 +15,12 @@ const VoteSchema = new Schema<IVote>(
     id: { type: Schema.Types.ObjectId, required: true },
     type: {
       type: String,
-      enum: [VoteType.Question, VoteType.Answer],
+      enum: [ActionType.Question, ActionType.Answer],
       required: true,
     },
     voteType: {
       type: String,
-      enum: [VoteVoteType.UpVote, VoteVoteType.DownVote],
+      enum: [VoteType.UpVote, VoteType.DownVote],
       required: true,
     },
   },
