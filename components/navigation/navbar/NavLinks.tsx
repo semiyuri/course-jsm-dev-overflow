@@ -1,20 +1,21 @@
 "use client";
 
-import { sidebarLinks } from "@/constants";
-import Link from "next/link";
-import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import React from "react";
+
 import { SheetClose } from "@/components/ui/sheet";
+import { sidebarLinks } from "@/constants";
+import { cn } from "@/lib/utils";
 
 interface Props {
+  userId?: string;
   isMobileNav?: boolean;
 }
 
-const NavLinks = ({ isMobileNav }: Props) => {
+const NavLinks = ({ isMobileNav, userId }: Props) => {
   const pathname = usePathname();
-  const userId = 1;
 
   return (
     <>
