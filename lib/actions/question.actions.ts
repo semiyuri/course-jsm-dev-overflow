@@ -2,7 +2,7 @@
 
 import mongoose from "mongoose";
 
-import Question from "@/database/question.model";
+import QuestionModel from "@/database/question.model";
 import TagQuestion from "@/database/tag-question.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
 import {
@@ -10,7 +10,7 @@ import {
   EditQuestionParams,
   GetQuestionParams,
 } from "@/types/action";
-import { ActionResponse, ErrorResponse } from "@/types/global";
+import { ActionResponse, ErrorResponse, Question } from "@/types/global";
 
 import action from "../handlers/action";
 import handleError from "../handlers/error";
@@ -22,7 +22,7 @@ import {
 
 export async function createQuestion(
   params: CreateQuestionParams
-): Promise<ActionResponse<typeof Question>> {
+): Promise<ActionResponse<Question>> {
   const validationResult = await action({
     params,
     schema: AskQuestionSchema,
@@ -40,7 +40,7 @@ export async function createQuestion(
   session.startTransaction();
 
   try {
-    const [question] = await Question.create(
+    const [question] = await QuestionModel.create(
       [{ title, content, author: userId }],
       { session }
     );
@@ -68,7 +68,7 @@ export async function createQuestion(
 
     await TagQuestion.insertMany(tagQuestionDocuments, { session });
 
-    await Question.findByIdAndUpdate(
+    await QuestionModel.findByIdAndUpdate(
       question._id,
       { $push: { tags: { $each: tagIds } } },
       { session }
@@ -87,7 +87,7 @@ export async function createQuestion(
 
 export async function editQuestion(
   params: EditQuestionParams
-): Promise<ActionResponse<typeof Question>> {
+): Promise<ActionResponse<Question>> {
   const validationResult = await action({
     params,
     schema: EditQuestionSchema,
@@ -105,7 +105,7 @@ export async function editQuestion(
   session.startTransaction();
 
   try {
-    const question = await Question.findById(questionId).populate("tags");
+    const question = await QuestionModel.findById(questionId).populate("tags");
 
     if (!question) {
       throw new Error("Question not found");
@@ -187,7 +187,7 @@ export async function editQuestion(
 
 export async function getQuestion(
   params: GetQuestionParams
-): Promise<ActionResponse<typeof Question>> {
+): Promise<ActionResponse<Question>> {
   const validationResult = await action({
     params,
     schema: GetQuestionSchema,
@@ -201,7 +201,7 @@ export async function getQuestion(
   const { questionId } = validationResult.params!;
 
   try {
-    const question = await Question.findById(questionId).populate("tags");
+    const question = await QuestionModel.findById(questionId).populate("tags");
 
     if (!question) {
       throw new Error("Question not found");
